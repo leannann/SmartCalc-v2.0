@@ -298,9 +298,17 @@ std::string s21::Model::convertLexToSym(std::string input, double x) noexcept {
  * @param input Входная строка, представляющая математическое выражение.
  * @return True, если ввод корректен, в противном случае false.
  */
-bool s21::Model::checkInputCorrect(const std::string input) const noexcept {
+bool s21::Model::checkInputCorrect(const std::string input) noexcept {
   bool result = true;  // Изначально считаем, что ввод корректен
   int braceCount = 0;  // Счетчик открытых скобок
+
+  for (size_t i = 0; i < input.size(); ++i)
+    // Проверка недопустимого положения переменной x
+    if (input[i] == 'x' &&
+        (std::isdigit(input[i + 1]) || std::isdigit(input[i - 1])))
+      result = false;
+
+  std::string convertInput = convertLexToSym(input, 'x');
 
   // Проверка максимальной длины ввода
   if (input.size() > MAXSIZE) {
@@ -308,84 +316,90 @@ bool s21::Model::checkInputCorrect(const std::string input) const noexcept {
   }
 
   // Проверка недопустимых начальных символов
-  if (input[0] == ')' || input[0] == '%' || input[0] == '.' ||
-      input[0] == '*' || input[0] == '/' || input[0] == '^') {
+  if (convertInput[0] == ')' || convertInput[0] == '%' ||
+      convertInput[0] == '.' || convertInput[0] == '*' ||
+      convertInput[0] == '/' || convertInput[0] == '^') {
     result = false;
   }
 
   // Проверка недопустимых комбинаций символов
-  for (size_t i = 0; i < input.size(); ++i) {
+  for (size_t i = 0; i < convertInput.size(); ++i) {
     // Проверка непарных символов
-    if (input[i] == '+' && input[i + 1] == '\0') {
+    if (convertInput[i] == '+' && convertInput[i + 1] == '\0') {
       result = false;
     }
 
-    if (input[i] == 'n' && input[i + 1] == '\0') {
+    if (convertInput[i] == 'n' && convertInput[i + 1] == '\0') {
       result = false;
     }
 
-    if (input[i] == 's' && input[i + 1] == '\0') {
+    if (convertInput[i] == 's' && convertInput[i + 1] == '\0') {
       result = false;
     }
 
-    if (input[i] == '-' && input[i + 1] == '\0') {
+    if (convertInput[i] == '-' && convertInput[i + 1] == '\0') {
       result = false;
     }
 
-    if (input[i] == 'r' && input[i + 2] == '\0') {
+    if (convertInput[i] == 'r' && convertInput[i + 2] == '\0') {
       result = false;
     }
 
-    if (isOperator(input[i]) && input[i + 1] == '\0') {
+    if (isOperator(convertInput[i]) && convertInput[i + 1] == '\0') {
       result = false;
     }
     // Проверка недопустимого положения операторов
-    if (isOperator(input[i]) && (input[i - 1] == '.' || input[i + 1] == '.')) {
+    if (isOperator(convertInput[i]) &&
+        (convertInput[i - 1] == '.' || convertInput[i + 1] == '.')) {
       result = false;
     }
 
-    if (isOperator(input[i]) &&
-        (isOperator(input[i + 1]) || isOperator(input[i - 1]))) {
+    if (isOperator(convertInput[i]) &&
+        (isOperator(convertInput[i + 1]) || isOperator(convertInput[i - 1]))) {
       result = false;
     }
 
-    if (isOperator(input[i]) && isOperator(input[i + 1])) {
+    if (isOperator(convertInput[i]) && isOperator(convertInput[i + 1])) {
       result = false;
     }
 
-    if (std::isdigit(input[i]) && input[i + 1] == '.' && input[i + 2] == '.') {
+    if (isUnaryOperator(convertInput[i]) && convertInput[i + 1] != '(') {
       result = false;
     }
+
     // Проверка недопустимого положения десятичных чисел
-    if (std::isdigit(input[i]) && input[i + 1] == '.' && input[i - 1] == '.') {
+    if (std::isdigit(convertInput[i]) && convertInput[i + 1] == '.' &&
+        convertInput[i + 2] == '.') {
       result = false;
     }
 
-    if (std::isdigit(input[i]) && input[i - 1] == '.' && input[i - 2] == '.') {
+    if (std::isdigit(convertInput[i]) && convertInput[i + 1] == '.' &&
+        convertInput[i - 1] == '.') {
       result = false;
     }
 
-    // Проверка недопустимого положения переменной x
-    if (input[i] == 'x' &&
-        (std::isdigit(input[i + 1]) || std::isdigit(input[i - 1]))) {
+    if (std::isdigit(convertInput[i]) && convertInput[i - 1] == '.' &&
+        convertInput[i - 2] == '.') {
       result = false;
     }
 
-    if ((input[i] == '(') && (std::isdigit(input[i - 1]) ||
-                              input[i - 1] == '.' || input[i - 1] == 'x')) {
+    if ((convertInput[i] == '(') &&
+        (std::isdigit(convertInput[i - 1]) || convertInput[i + 1] == '.' ||
+         convertInput[i - 1] == '.' || convertInput[i - 1] == 'x')) {
       result = false;
     }
     //  Проверка недопустимоого положения скобочек
-    if ((input[i] == ')') &&
-        (std::isdigit(input[i + 1]) || input[i + 1] == '.' ||
-         input[i + 1] == 'x' || input[i + 1] == 'l')) {
+    if ((convertInput[i] == ')') &&
+        (std::isdigit(convertInput[i + 1]) || convertInput[i + 1] == '.' ||
+         convertInput[i + 1] == 'x' || convertInput[i + 1] == 'l')) {
       result = false;
       --braceCount;
     }
 
-    if ((std::isdigit(input[i]) || input[i] == 'x' || input[i] == '.') &&
-        (input[i + 1] == 's' || input[i + 1] == 'c' || input[i + 1] == 't' ||
-         input[i + 1] == 'a')) {
+    if ((std::isdigit(convertInput[i]) || convertInput[i] == 'x' ||
+         convertInput[i] == '.') &&
+        (convertInput[i + 1] == 's' || convertInput[i + 1] == 'c' ||
+         convertInput[i + 1] == 't' || convertInput[i + 1] == 'a')) {
       result = false;
     }
   }
@@ -396,4 +410,41 @@ bool s21::Model::checkInputCorrect(const std::string input) const noexcept {
   }
 
   return result;
+}
+
+/**
+ * @brief Проверяет строку на корректное представление числа.
+ *
+ * Данная функция проверяет, представляет ли входная строка корректное число.
+ * Считается, что строка представляет число, если:
+ * - Все символы в строке являются цифрами или одной точкой ('.').
+ * - Строка не начинается и не заканчивается точкой.
+ * - Строка не содержит подряд идущих точек.
+ *
+ * @param input Входная строка для проверки.
+ * @return true, если входная строка представляет корректное число, в противном
+ * случае false.
+ */
+bool s21::Model::validator(std::string input) const noexcept {
+  // Проверка, что все символы являются цифрами или точкой
+  for (size_t i = 0; i < input.size(); ++i) {
+    if (input[i] != '.' && !(std::isdigit(input[i]))) {
+      return false;
+    }
+  }
+
+  // Проверка, что строка не начинается или не заканчивается точкой
+  if (input[0] == '.' || input[input.size() - 1] == '.') {
+    return false;
+  }
+
+  // Проверка, что строка не содержит подряд идущих точек
+  for (size_t i = 0; i < input.size(); ++i) {
+    if (input[i] == '.' && input[i + 1] == '.') {
+      return false;
+    }
+  }
+
+  // Входная строка представляет корректное число
+  return true;
 }

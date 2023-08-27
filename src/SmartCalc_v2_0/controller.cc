@@ -33,3 +33,18 @@ bool s21::Controller::checkInputCorrect(
     const std::string input) const noexcept {
   return model->checkInputCorrect(input);
 }
+
+/**
+ * @brief Проверяет введенную строку на корректность как числового значения.
+ *
+ * Данная функция делегирует проверку входной строки валидатору модели.
+ * Возвращает результат проверки валидатора модели для данной строки.
+ *
+ * @param input Входная строка для проверки на корректность числового значения.
+ * @return true, если введенная строка корректно представляет число, в противном
+ * случае false.
+ */
+bool s21::Controller::validatorController(std::string input) const noexcept {
+  // Вызываем метод валидации модели для входной строки и возвращаем результат
+  return model->validator(input);
+}

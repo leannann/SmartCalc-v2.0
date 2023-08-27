@@ -24,7 +24,6 @@ class Ui_view
 public:
     QWidget *centralwidget;
     QLineEdit *lineEdit;
-    QPushButton *pushButton_AC;
     QPushButton *pushButton_C;
     QPushButton *pushButton_sign;
     QPushButton *pushButton_div;
@@ -80,25 +79,16 @@ public:
         lineEdit = new QLineEdit(centralwidget);
         lineEdit->setObjectName(QString::fromUtf8("lineEdit"));
         lineEdit->setGeometry(QRect(0, 0, 700, 100));
+        lineEdit->setReadOnly(true);
         lineEdit->setStyleSheet(QString::fromUtf8("QLabel {\n"
 "qproperty-alignment: 'AlignVCenter | AlignRight';\n"
 "border: 1px solid gray;\n"
 "}\n"
 "\n"
 "background-color: white;"));
-        pushButton_AC = new QPushButton(centralwidget);
-        pushButton_AC->setObjectName(QString::fromUtf8("pushButton_AC"));
-        pushButton_AC->setGeometry(QRect(0, 100, 100, 50));
-        pushButton_AC->setStyleSheet(QString::fromUtf8("QPushButton{\n"
-"border: 1px solid gray;\n"
-"}\n"
-"QPushButton:pressed{\n"
-"background-color: qlineargradient(x1: 0, y1: 0, x2: 0, y2: 1, stop: 0 #BEBEBE, stop: 1 #D7D7D7);\n"
-"}\n"
-""));
         pushButton_C = new QPushButton(centralwidget);
         pushButton_C->setObjectName(QString::fromUtf8("pushButton_C"));
-        pushButton_C->setGeometry(QRect(100, 100, 100, 50));
+        pushButton_C->setGeometry(QRect(500, 300, 100, 50));
         pushButton_C->setStyleSheet(QString::fromUtf8("QPushButton{\n"
 "border: 1px solid gray;\n"
 "}\n"
@@ -108,7 +98,7 @@ public:
 ""));
         pushButton_sign = new QPushButton(centralwidget);
         pushButton_sign->setObjectName(QString::fromUtf8("pushButton_sign"));
-        pushButton_sign->setGeometry(QRect(200, 100, 100, 50));
+        pushButton_sign->setGeometry(QRect(600, 300, 100, 50));
         pushButton_sign->setStyleSheet(QString::fromUtf8("QPushButton{\n"
 "border: 1px solid gray;\n"
 "}\n"
@@ -371,7 +361,7 @@ public:
 ""));
         pushButton_const = new QPushButton(centralwidget);
         pushButton_const->setObjectName(QString::fromUtf8("pushButton_const"));
-        pushButton_const->setGeometry(QRect(500, 300, 100, 50));
+        pushButton_const->setGeometry(QRect(0, 100, 100, 50));
         pushButton_const->setStyleSheet(QString::fromUtf8("QPushButton{\n"
 "border: 1px solid gray;\n"
 "}\n"
@@ -474,7 +464,7 @@ public:
         lineEdit_yMax->setGeometry(QRect(600, 350, 100, 50));
         lineEdit_value = new QLineEdit(centralwidget);
         lineEdit_value->setObjectName(QString::fromUtf8("lineEdit_value"));
-        lineEdit_value->setGeometry(QRect(600, 300, 100, 50));
+        lineEdit_value->setGeometry(QRect(100, 100, 200, 50));
         lineEdit_value->setStyleSheet(QString::fromUtf8("QLabel {\n"
 "qproperty-alignment: 'AlignVCenter | AlignRight';\n"
 "border: 1px solid gray;\n"
@@ -492,7 +482,6 @@ public:
     {
         view->setWindowTitle(QCoreApplication::translate("view", "view", nullptr));
         lineEdit->setText(QString());
-        pushButton_AC->setText(QCoreApplication::translate("view", "AC", nullptr));
         pushButton_C->setText(QCoreApplication::translate("view", "C", nullptr));
         pushButton_sign->setText(QCoreApplication::translate("view", "+/-", nullptr));
         pushButton_div->setText(QCoreApplication::translate("view", "\303\267", nullptr));

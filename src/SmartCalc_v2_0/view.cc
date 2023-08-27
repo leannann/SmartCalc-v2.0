@@ -68,28 +68,6 @@ void s21::view::on_pushButton_C_clicked() const noexcept {
 }
 
 /**
- * @brief Удаляет последний символ из текстового поля.
- *
- * Функция удаляет последний символ из текущего содержимого текстового поля в
- * окне интерфейса. Если текстовое поле не пусто, то последний символ будет
- * удален.
- *
- * @note Функция работает с текстовым полем, доступным через ui->lineEdit.
- * @note Функция выполняет обновление содержимого текстового поля.
- * @note Функция является частью класса s21::view.
- *
- * @return void
- */
-void s21::view::on_pushButton_AC_clicked() const noexcept {
-  QString s = ui->lineEdit->text();
-
-  if (s.length() > 0) {
-    QString newtext = s.remove(s.length() - 1, 1);
-    ui->lineEdit->setText(newtext);
-  }
-}
-
-/**
  * @brief Изменяет знак числа в текстовом поле.
  *
  * Функция меняет знак числа, которое отображается в текущем содержимом
@@ -135,17 +113,20 @@ void s21::view::on_pushButton_sign_clicked() const noexcept {
  * @return void
  */
 void s21::view::on_pushButton_result_clicked() const noexcept {
-  std::string str = ui->lineEdit->text().toStdString();
-  QString str_x = ui->lineEdit_value->text();
-  double x = str_x.toDouble();
+  if (ui->lineEdit->text() != "" && ui->lineEdit->text() != "ERROR!") {
+    std::string str = ui->lineEdit->text().toStdString();
+    QString str_x = ui->lineEdit_value->text();
+    double x = str_x.toDouble();
 
-  if (controller->checkInputCorrect(str)) {
-    double res = controller->resultController(str, x);
-    QString p = QString::number(res);
-    ui->lineEdit->setText(p);
-  } else {
-    ui->lineEdit->setText("ERROR!");
-  }
+    if (controller->checkInputCorrect(str)) {
+      double res = controller->resultController(str, x);
+      QString p = QString::number(res);
+      ui->lineEdit->setText(p);
+    } else
+      ui->lineEdit->setText("ERROR!");
+
+  } else if (ui->lineEdit->text() == "ERROR!")
+    ui->lineEdit->clear();
 }
 
 /**
@@ -165,52 +146,70 @@ void s21::view::on_pushButton_print_clicked() noexcept {
   x.clear();
   y.clear();
 
-  // Получаем значения параметров для построения графика
-  QString str_xBegin = ui->lineEdit_xBegin->text();
-  QString str_xEnd = ui->lineEdit_xEnd->text();
-  QString str_step = ui->lineEdit_step->text();
+  // Проверка правильности ввода области значения и области определения функции
+  if (controller->validatorController(
+          ui->lineEdit_xBegin->text().toStdString()) &&
+      controller->validatorController(
+          ui->lineEdit_xEnd->text().toStdString()) &&
+      controller->validatorController(
+          ui->lineEdit_step->text().toStdString()) &&
+      controller->validatorController(
+          ui->lineEdit_xMax->text().toStdString()) &&
+      controller->validatorController(
+          ui->lineEdit_xMin->text().toStdString()) &&
+      controller->validatorController(
+          ui->lineEdit_yMax->text().toStdString()) &&
+      controller->validatorController(
+          ui->lineEdit_yMin->text().toStdString()) &&
+      (controller->checkInputCorrect(ui->lineEdit->text().toStdString())) &&
+      (ui->lineEdit->text() != "ERROR!")) {
+    // Получаем значения параметров для построения графика
+    QString str_xBegin = ui->lineEdit_xBegin->text();
+    QString str_xEnd = ui->lineEdit_xEnd->text();
+    QString str_step = ui->lineEdit_step->text();
 
-  double xStart = str_xBegin.toDouble();
-  double xEnd = str_xEnd.toDouble();
-  double step = str_step.toDouble();
+    double xStart = str_xBegin.toDouble();
+    double xEnd = str_xEnd.toDouble();
+    double step = str_step.toDouble();
 
-  QString str_xMax = ui->lineEdit_xMax->text();
-  QString str_xMin = ui->lineEdit_xMin->text();
+    QString str_xMax = ui->lineEdit_xMax->text();
+    QString str_xMin = ui->lineEdit_xMin->text();
 
-  double xMax = str_xMax.toDouble();
-  double xMin = str_xMin.toDouble();
+    double xMax = str_xMax.toDouble();
+    double xMin = str_xMin.toDouble();
 
-  QString str_yMax = ui->lineEdit_yMax->text();
-  QString str_yMin = ui->lineEdit_yMin->text();
+    QString str_yMax = ui->lineEdit_yMax->text();
+    QString str_yMin = ui->lineEdit_yMin->text();
 
-  double yMax = str_yMax.toDouble();
-  double yMin = str_yMin.toDouble();
+    double yMax = str_yMax.toDouble();
+    double yMin = str_yMin.toDouble();
 
-  // Устанавливаем диапазоны для осей x и y графика
-  ui->widget->xAxis->setRange(xMin, xMax);
-  ui->widget->yAxis->setRange(yMin, yMax);
+    // Устанавливаем диапазоны для осей x и y графика
+    ui->widget->xAxis->setRange(xMin, xMax);
+    ui->widget->yAxis->setRange(yMin, yMax);
 
-  // Получаем введенное пользователем математическое выражение
-  std::string str = ui->lineEdit->text().toStdString();
+    // Получаем введенное пользователем математическое выражение
+    std::string str = ui->lineEdit->text().toStdString();
 
-  // Проверяем корректность введенного выражения
-  if (controller->checkInputCorrect(str)) {
-    // Проверяем, заданы ли параметры для построения графика
-    if ((xStart || xEnd || step || xMax || xMin || yMax || yMin)) {
-      // Строим массивы данных x и y для построения графика
-      for (double tmp = xStart; tmp <= xEnd; tmp += step) {
-        x.push_back(tmp);
-        y.push_back(controller->resultController(str, tmp));
+    // Проверяем корректность введенного выражения
+    if (controller->checkInputCorrect(str)) {
+      // Проверяем, заданы ли параметры для построения графика
+      if ((xStart || xEnd || step || xMax || xMin || yMax || yMin)) {
+        // Строим массивы данных x и y для построения графика
+        for (double tmp = xStart; tmp <= xEnd; tmp += step) {
+          x.push_back(tmp);
+          y.push_back(controller->resultController(str, tmp));
+        }
+
+        // Добавляем график на графическое окно и перерисовываем
+        ui->widget->addGraph();
+        ui->widget->graph(0)->addData(x, y);
+        ui->widget->replot();
       }
-
-      // Добавляем график на графическое окно и перерисовываем
-      ui->widget->addGraph();
-      ui->widget->graph(0)->addData(x, y);
-      ui->widget->replot();
-    }
-  } else {
+    } else
+      ui->lineEdit->setText("ERROR!");  // Выводим ошибку на текстовое поле
+  } else
     ui->lineEdit->setText("ERROR!");  // Выводим ошибку на текстовое поле
-  }
 }
 
 /**

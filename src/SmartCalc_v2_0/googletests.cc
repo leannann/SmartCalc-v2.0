@@ -355,6 +355,48 @@ TEST(DepositCalculator, CapitalReplenishmentWithdrawalsTax) {
   ASSERT_NEAR(tax_amount, 0, 0.01);
 }
 
+TEST(Validator, Test1) {
+  Model model;
+  Controller controller(&model);
+  ASSERT_EQ(controller.validatorController("-11+23*(2-2)"), false);
+}
+
+TEST(Validator, Test2) {
+  Model model;
+  Controller controller(&model);
+  ASSERT_EQ(controller.validatorController("2..2113"), false);
+}
+
+TEST(Validator, Test3) {
+  Model model;
+  Controller controller(&model);
+  ASSERT_EQ(controller.validatorController(".124141"), false);
+}
+
+TEST(Validator, Test4) {
+  Model model;
+  Controller controller(&model);
+  ASSERT_EQ(controller.validatorController("124141."), false);
+}
+
+TEST(Validator, Test5) {
+  Model model;
+  Controller controller(&model);
+  ASSERT_EQ(controller.validatorController("124141qwfqfqf"), false);
+}
+
+TEST(Validator, Test6) {
+  Model model;
+  Controller controller(&model);
+  ASSERT_EQ(controller.validatorController("232323"), true);
+}
+
+TEST(Validator, Test7) {
+  Model model;
+  Controller controller(&model);
+  ASSERT_EQ(controller.validatorController("23.2323"), true);
+}
+
 int main(int argc, char **argv) {
   ::testing::InitGoogleTest(&argc, argv);
   return RUN_ALL_TESTS();

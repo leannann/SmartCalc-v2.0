@@ -22,6 +22,9 @@
       <width>700</width>
       <height>100</height>
      </rect>
+     </property>
+    <property name="readOnly">
+            <bool>true</bool>
     </property>
     <property name="styleSheet">
      <string notr="true">QLabel {
@@ -35,33 +38,11 @@ background-color: white;</string>
      <string/>
     </property>
    </widget>
-   <widget class="QPushButton" name="pushButton_AC">
-    <property name="geometry">
-     <rect>
-      <x>0</x>
-      <y>100</y>
-      <width>100</width>
-      <height>50</height>
-     </rect>
-    </property>
-    <property name="styleSheet">
-     <string notr="true">QPushButton{
-border: 1px solid gray;
-}
-QPushButton:pressed{
-background-color: qlineargradient(x1: 0, y1: 0, x2: 0, y2: 1, stop: 0 #BEBEBE, stop: 1 #D7D7D7);
-}
-</string>
-    </property>
-    <property name="text">
-     <string>AC</string>
-    </property>
-   </widget>
    <widget class="QPushButton" name="pushButton_C">
     <property name="geometry">
      <rect>
-      <x>100</x>
-      <y>100</y>
+      <x>500</x>
+      <y>300</y>
       <width>100</width>
       <height>50</height>
      </rect>
@@ -82,8 +63,8 @@ background-color: qlineargradient(x1: 0, y1: 0, x2: 0, y2: 1, stop: 0 #BEBEBE, s
    <widget class="QPushButton" name="pushButton_sign">
     <property name="geometry">
      <rect>
-      <x>200</x>
-      <y>100</y>
+      <x>600</x>
+      <y>300</y>
       <width>100</width>
       <height>50</height>
      </rect>
@@ -657,8 +638,8 @@ background-color: qlineargradient(x1: 0, y1: 0, x2: 0, y2: 1, stop: 0 #BEBEBE, s
    <widget class="QPushButton" name="pushButton_const">
     <property name="geometry">
      <rect>
-      <x>500</x>
-      <y>300</y>
+      <x>0</x>
+      <y>100</y>
       <width>100</width>
       <height>50</height>
      </rect>
@@ -936,9 +917,9 @@ background-color: qlineargradient(x1: 0, y1: 0, x2: 0, y2: 1, stop: 0 #BEBEBE, s
    <widget class="QLineEdit" name="lineEdit_value">
     <property name="geometry">
      <rect>
-      <x>600</x>
-      <y>300</y>
-      <width>100</width>
+      <x>100</x>
+      <y>100</y>
+      <width>200</width>
       <height>50</height>
      </rect>
     </property>

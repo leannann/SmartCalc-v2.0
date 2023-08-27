@@ -60,7 +60,7 @@ class Model {
    * @param input Строка с математическим выражением.
    * @return `true`, если ввод корректен, и `false` в противном случае.
    */
-  bool checkInputCorrect(const std::string input) const noexcept;
+  bool checkInputCorrect(const std::string input) noexcept;
 
   /**
    * @brief Возвращает результат вычислений.
@@ -71,6 +71,21 @@ class Model {
    * @return Значение результата вычислений.
    */
   inline double getData() const noexcept { return data; }
+
+  /**
+   * @brief Проверяет строку на корректное представление числа.
+   *
+   * Данная функция проверяет, представляет ли входная строка корректное число.
+   * Считается, что строка представляет число, если:
+   * - Все символы в строке являются цифрами или одной точкой ('.').
+   * - Строка не начинается и не заканчивается точкой.
+   * - Строка не содержит подряд идущих точек.
+   *
+   * @param input Входная строка для проверки.
+   * @return true, если входная строка представляет корректное число, в
+   * противном случае false.
+   */
+  bool validator(std::string) const noexcept;
 
  private:
   double data; /**< Результат вычислений. */
@@ -114,6 +129,10 @@ class Model {
   inline bool isOperator(char ch) const noexcept {
     return ch == '+' || ch == '-' || ch == '*' || ch == '/' || ch == '^' ||
            ch == '%';
+  }
+  inline bool isUnaryOperator(char ch) const noexcept {
+    return ch == 's' || ch == 'c' || ch == 't' || ch == 'S' || ch == 'C' ||
+           ch == 'T' || ch == 'q' || ch == 'g' || ch == 'l';
   }
 };
 }  // namespace s21
